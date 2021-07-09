@@ -23,13 +23,23 @@ service = NaturalLanguageUnderstandingV1(
 
 #print(json.dumps(response, indent=2))
 
-nlu_url = "http://newsroom.ibm.com/Guerbet-and-IBM-Watson-Health-Announce-Strategic-Partnership-for-Artificial-Intelligence-in-Medical-Imaging-Liver"
-response = service.analyze(
-    url=nlu_url,
-    features=Features(categories=CategoriesOptions(), \
-                      #entities=EntitiesOptions(),
-                      #keywords=KeywordsOptions())
-                      )
-).get_result()
+url1 = "http://newsroom.ibm.com/Guerbet-and-IBM-Watson-Health-Announce-Strategic-Partnership-for-Artificial-Intelligence-in-Medical-Imaging-Liver"
+url2 = "https://medium.com/swlh/how-to-study-for-data-structures-and-algorithms-interviews-at-faang-65043e00b5df" 
+url3 = "https://developer.ibm.com/tutorials/smart-bookmark-plugin-using-watson-nlu/"
+url_list = [url1, url2, url3]
 
-print(json.dumps(response, indent=2))
+for nlu_url in url_list: 
+    response = service.analyze(
+        url=nlu_url,
+        features=Features(categories=CategoriesOptions(), \
+                        #entities=EntitiesOptions(),
+                        #keywords=KeywordsOptions())
+                        )
+    ).get_result()
+
+    #print(json.dumps(response, indent=2))
+    print(response['retrieved_url'])
+    for c in response['categories']:
+        print(c['score'], c['label'])
+
+
