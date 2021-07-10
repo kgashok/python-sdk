@@ -41,6 +41,9 @@ with open(filename, 'r') as fp:
 
 import time
 
+#Summary object 
+categ = dict()
+
 for nlu_url in reversed(urls):
     nlu_url = nlu_url.strip()
     try:
@@ -49,8 +52,7 @@ for nlu_url in reversed(urls):
             features=Features(categories=CategoriesOptions(), \
                             #entities=EntitiesOptions(),
                             #keywords=KeywordsOptions())
-                            )
-        ).get_result()
+                            )).get_result()
     except: 
         print("*** Server busy...")
         time.sleep(2)
@@ -59,4 +61,13 @@ for nlu_url in reversed(urls):
     print(response['retrieved_url'])
     for c in response['categories']:
         print("-", c['score'], c['label'])
+    
+        if c['label'] not in categ:
+            categ[c['label']] = c['score']
+        else:
+            categ[c['label']] += c['score']
 
+print("Summary")
+entries = categ.items()
+for e in sorted(entries, key=lambda x:x[1], reverse=True):
+    print(e) 
