@@ -39,15 +39,21 @@ filename = "urls.txt"
 with open(filename, 'r') as fp:
     urls = fp.readlines()
 
+import time
+
 for nlu_url in reversed(urls):
     nlu_url = nlu_url.strip()
-    response = service.analyze(
-        url=nlu_url,
-        features=Features(categories=CategoriesOptions(), \
-                        #entities=EntitiesOptions(),
-                        #keywords=KeywordsOptions())
-                        )
-    ).get_result()
+    try:
+        response = service.analyze(
+            url=nlu_url,
+            features=Features(categories=CategoriesOptions(), \
+                            #entities=EntitiesOptions(),
+                            #keywords=KeywordsOptions())
+                            )
+        ).get_result()
+    except: 
+        print("*** Server busy...")
+        time.sleep(2)
 
     #print(json.dumps(response, indent=2))
     print(response['retrieved_url'])
