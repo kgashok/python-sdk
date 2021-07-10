@@ -29,11 +29,11 @@ url3 = "https://developer.ibm.com/tutorials/smart-bookmark-plugin-using-watson-n
 url4 = "https://www.msn.com/en-in/money/technology/alien-life-on-saturn-moon-nasa-cassini-found-potential-proof-says-study/ar-AALXLVN?ocid=winp1taskbar"
 url5 = "https://kgisl.github.io/makesite/blog/cokreating-geniuses/"
 url6 = "https://j.mp/bookThis"
-url7 = "https://stackoverflow.blog/2021/07/07/the-unexpected-benefits-of-mentoring-others/?cb=1&_ga=2.73568470.599507052.1625770473-478896514.1585758695"
+url7 = "https://stackoverflow.blog/2021/07/07/the-unexpected-benefits-of-mentoring-others/"
 url8 = "https://www.businesstoday.in/industry/it/story/tcs-to-hire-40000-freshers-from-campuses-in-current-fiscal-300932-2021-07-09"
 url9 = "https://www.deccanherald.com/business/business-news/elon-musk-trial-asks-the-2-billion-question-who-controls-tesla-1006673.html"
 url10 = "https://www.tennisworldusa.org/tennis/news/Roger_Federer/99764/novak-djokovic-i-hope-that-roger-federer-rafael-nadal-and-me-can-/"
-url_list = [url1, url2, url3, url4, url5, url6, url7, url8, url9, url10]
+urls = [url1, url2, url3, url4, url5, url6, url7, url8, url9, url10]
 
 filename = "urls.txt"
 with open(filename, 'r') as fp:
@@ -85,12 +85,10 @@ for label, count in sorted(entries, key=lambda x:x[1], reverse=True):
         subs = tokens[2:]
     if top not in summary:
         summary[top]['count'] = count
-        summary[top]['subs'] = subs
+        summary[top]['subs'] = set(subs)
     else:
         summary[top]['count'] += count
-        for s in subs: 
-            if s not in summary[top]['subs']: 
-                summary[top]['subs'].append(s)
+        summary[top]['subs'].update(subs)
         
 print("-----CONSOLIDATED----")
 for top, info in sorted(summary.items(), key=lambda x:x[1]['count'], reverse=True):
