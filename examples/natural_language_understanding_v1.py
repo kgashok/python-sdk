@@ -43,6 +43,7 @@ import time
 
 #Summary object 
 categ = dict()
+failed = list()
 
 for nlu_url in reversed(urls):
     nlu_url = nlu_url.strip()
@@ -55,18 +56,22 @@ for nlu_url in reversed(urls):
                             )).get_result()
     except: 
         print("*** Server busy...")
+        failed.append(nlu_url)
         time.sleep(2)
 
     #print(json.dumps(response, indent=2))
     print(response['retrieved_url'])
     for c in response['categories']:
-        print("-", c['score'], c['label'])
+        score, label = c['score'], c['label'] 
+        print("-", score, label)
     
-        if c['label'] not in categ:
-            categ[c['label']] = c['score']
+        if label not in categ:
+            categ[label] = score
         else:
-            categ[c['label']] += c['score']
+            categ[label] += score
 
+print("--------")
+print("Not processed", failed) if failed else print("All processed")
 print("Summary")
 entries = categ.items()
 for e in sorted(entries, key=lambda x:x[1], reverse=True):
