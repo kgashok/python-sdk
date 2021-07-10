@@ -76,13 +76,23 @@ print("Summary")
 
 from collections import defaultdict
 entries = categ.items()
-summary = defaultdict(int)
+summary = defaultdict(dict)
 for label, count in sorted(entries, key=lambda x:x[1], reverse=True):
     #print(label, count)
-    labeltokens = label.split('/')
-    summary[labeltokens[1]] += count
-
+    tokens = label.split('/')
+    top = tokens[1]
+    if len(tokens) > 2: 
+        subs = tokens[2:]
+    if top not in summary:
+        summary[top]['count'] = count
+        summary[top]['subs'] = subs
+    else:
+        summary[top]['count'] += count
+        for s in subs: 
+            if s not in summary[top]['subs']: 
+                summary[top]['subs'].append(s)
+        
 print("-----CONSOLIDATED----")
-for top, total in sorted(summary.items(), key=lambda x:x[1], reverse=True):
-    print(f'{top}: {total:.2f}')
+for top, info in sorted(summary.items(), key=lambda x:x[1]['count'], reverse=True):
+    print(f'- {info["count"]:.2f}: {top.upper()} {", ".join(info["subs"])}')
 
