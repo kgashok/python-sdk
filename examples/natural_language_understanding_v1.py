@@ -73,6 +73,16 @@ for nlu_url in reversed(urls):
 print("--------")
 print("Not processed", failed) if failed else print("All processed")
 print("Summary")
+
+from collections import defaultdict
 entries = categ.items()
-for e in sorted(entries, key=lambda x:x[1], reverse=True):
-    print(e) 
+summary = defaultdict(int)
+for label, count in sorted(entries, key=lambda x:x[1], reverse=True):
+    #print(label, count)
+    labeltokens = label.split('/')
+    summary[labeltokens[1]] += count
+
+print("-----CONSOLIDATED----")
+for top, total in sorted(summary.items(), key=lambda x:x[1], reverse=True):
+    print(f'{top}: {total:.2f}')
+
