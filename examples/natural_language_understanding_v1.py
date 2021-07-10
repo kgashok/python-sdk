@@ -54,8 +54,8 @@ for nlu_url in reversed(urls):
                             #entities=EntitiesOptions(),
                             #keywords=KeywordsOptions())
                             )).get_result()
-    except: 
-        print("*** Server busy...")
+    except Exception as error:
+        print(error)
         failed.append(nlu_url)
         time.sleep(2)
 
