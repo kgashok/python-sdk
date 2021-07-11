@@ -35,9 +35,27 @@ url9 = "https://www.deccanherald.com/business/business-news/elon-musk-trial-asks
 url10 = "https://www.tennisworldusa.org/tennis/news/Roger_Federer/99764/novak-djokovic-i-hope-that-roger-federer-rafael-nadal-and-me-can-/"
 urls = [url1, url2, url3, url4, url5, url6, url7, url8, url9, url10]
 
+'''
 filename = "urls.txt"
 with open(filename, 'r') as fp:
     urls = fp.readlines()
+'''
+import json
+
+filename = "chrome_bookmarks.json"
+
+data = ""
+try: 
+    with open(filename, encoding="utf8") as fp: 
+        data = json.loads(fp.read())
+except Exception as error:
+    print(error)
+
+urls = [] 
+for d in data:
+    if 'url' in d:
+        urls.append(d['url'])
+
 
 import time
 
@@ -45,7 +63,13 @@ import time
 categ = dict()
 failed = list()
 
-for nlu_url in reversed(urls):
+import random
+from datetime import datetime
+random.seed(datetime.now())
+random.shuffle(urls)
+
+
+for i, nlu_url in enumerate(reversed(urls[:400]), 1):
     nlu_url = nlu_url.strip()
     try:
         response = service.analyze(
@@ -60,10 +84,10 @@ for nlu_url in reversed(urls):
         time.sleep(2)
 
     #print(json.dumps(response, indent=2))
-    print(response['retrieved_url'])
+    print(i, response['retrieved_url'])
     for c in response['categories']:
         score, label = c['score'], c['label'] 
-        print("-", score, label)
+        #print("-", score, label)
     
         if label not in categ:
             categ[label] = score
@@ -71,7 +95,7 @@ for nlu_url in reversed(urls):
             categ[label] += score
 
 print("--------")
-print("Not processed", failed) if failed else print("All processed")
+#print("Not processed", failed) if failed else print("All processed")
 print("Summary")
 
 from collections import defaultdict
@@ -92,5 +116,5 @@ for label, count in sorted(entries, key=lambda x:x[1], reverse=True):
         
 print("-----CONSOLIDATED----")
 for top, info in sorted(summary.items(), key=lambda x:x[1]['count'], reverse=True):
-    print(f'- {info["count"]:.2f}: {top.upper()} {", ".join(info["subs"])}')
+    print(f'- {info["count"]:.2f}: {top.upper()} {", ".join(sorted(info["subs"]))}')
 
